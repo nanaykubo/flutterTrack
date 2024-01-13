@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 Future<List<Map<String, dynamic>>?> fetchData(String apiUrl) async {
   try {
@@ -30,8 +31,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Side Menu Flutter App',
       theme: ThemeData(
-        useMaterial3: true,
-      ),
+          useMaterial3: true,
+          inputDecorationTheme: InputDecorationTheme(
+            focusedBorder: UnderlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+                borderSide: BorderSide(color: Colors.grey.shade200)),
+            enabledBorder: UnderlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+                borderSide: BorderSide(color: Colors.grey.shade200)),
+            border: UnderlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+                borderSide: BorderSide(color: Colors.grey.shade200)),
+          )),
       home: HomePage(),
     );
   }
@@ -144,7 +155,7 @@ class _AddUsersState extends State<AddUsers> {
   }
 
   // Selected dropdown value
-  String selectedDropdownValue = '1';
+  String? selectedValue;
 
   // Text controllers for text fields
   TextEditingController textController1 = TextEditingController();
@@ -160,69 +171,178 @@ class _AddUsersState extends State<AddUsers> {
         title: Text('Add Users'),
       ),
       body: Container(
-        padding: EdgeInsets.all(20),
-        child: isLoading
-            ? CircularProgressIndicator() // Show loader
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  // Use the fetched data to populate the dropdown options
-                  DropdownButtonFormField<String>(
-                    value: selectedDropdownValue,
-                    items: rolesData.map((role) {
-                      return DropdownMenuItem<String>(
-                        value: role['id'].toString(),
-                        child: Text(role['description'].toString()),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedDropdownValue = newValue!;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Select a role',
-                    ),
-                  ),
-                  // Text Field 1
-                  Container(
-                    child: TextFormField(
-                      controller: textController1,
-                      decoration: InputDecoration(
-                        labelText: 'Username',
+          padding: EdgeInsets.all(20),
+          child: isLoading
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'ROLE',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey.shade600,
+                        ),
+                        textAlign: TextAlign.left,
                       ),
-                    ),
-                  ),
-                  // Text Field 1
-                  Container(
-                    child: TextFormField(
-                      controller: textController2,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
+                      const SizedBox(
+                        height: 10.0,
                       ),
-                    ),
-                  ),
-                  // Text Field 1
-                  Container(
-                    child: TextFormField(
-                      controller: textController3,
-                      decoration: InputDecoration(
-                        labelText: 'First Name',
+                      // Use the fetched data to populate the dropdown options
+                      DropdownButtonHideUnderline(
+                        child: DropdownButton2<String>(
+                          isExpanded: true,
+                          hint: Text(
+                            'Choose a role',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey.shade500,
+                            ),
+                          ),
+                          value: selectedValue,
+                          items: rolesData.map((role) {
+                            return DropdownMenuItem<String>(
+                              value: role['id'].toString(),
+                              child: Text(role['description'].toString()),
+                            );
+                          }).toList(),
+                          onChanged: (String? value) {
+                            setState(() {
+                              selectedValue = value;
+                            });
+                          },
+                          buttonStyleData: ButtonStyleData(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(15),
+                              border: Border.all(
+                                color: Colors.grey.shade200,
+                              ),
+                            ),
+                          ),
+                          menuItemStyleData: MenuItemStyleData(
+                            height: 40,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  Container(
-                    child: TextFormField(
-                      controller: textController3,
-                      decoration: InputDecoration(
-                        labelText: 'Last Name',
+                      const SizedBox(
+                        height: 20.0,
                       ),
-                    ),
+                      Text(
+                        'USERNAME',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey.shade600,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      Container(
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.all(16),
+                            hintText: 'Username',
+                            hintStyle: TextStyle(
+                                fontSize: 16, color: Colors.grey.shade500),
+                            filled: true,
+                            fillColor: Colors.grey.shade200,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
+                      Text(
+                        'PASSWORD',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey.shade600,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      Container(
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.all(16),
+                            hintText: 'Password',
+                            hintStyle: TextStyle(
+                                fontSize: 16, color: Colors.grey.shade500),
+                            filled: true,
+                            fillColor: Colors.grey.shade200,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
+                      Text(
+                        'FIRST NAME',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey.shade600,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      Container(
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.all(16),
+                            hintText: 'First Name',
+                            hintStyle: TextStyle(
+                                fontSize: 16, color: Colors.grey.shade500),
+                            filled: true,
+                            fillColor: Colors.grey.shade200,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20.0,
+                      ),
+                      Text(
+                        'LAST NAME',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey.shade600,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      Container(
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.all(16),
+                            hintText: 'Last Name',
+                            hintStyle: TextStyle(
+                                fontSize: 16, color: Colors.grey.shade500),
+                            filled: true,
+                            fillColor: Colors.grey.shade200,
+                          ),
+                        ),
+                      ),
+
+                      // Add other widgets as needed
+                    ],
                   ),
-                  // Add other widgets as needed
-                ],
-              ),
-      ),
+                )),
     );
   }
 }
