@@ -20,6 +20,29 @@ Future<List<Map<String, dynamic>>?> fetchData(String apiUrl) async {
   }
 }
 
+Future<List<Map<String, dynamic>>?> insertData(
+    String apiUrl, Map<String, dynamic> postData) async {
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      body: jsonEncode(postData), // Convert the Map to JSON
+      headers: {
+        'Content-Type': 'application/json', // Set the content type to JSON
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body) as List;
+      return responseData.cast<Map<String, dynamic>>();
+    } else {
+      return null;
+    }
+  } catch (e) {
+    print('Error during API request: $e');
+    return null;
+  }
+}
+
 void main() {
   runApp(const MyApp());
 }
@@ -33,6 +56,12 @@ class MyApp extends StatelessWidget {
       title: 'Side Menu Flutter App',
       theme: ThemeData(
           useMaterial3: true,
+          appBarTheme: AppBarTheme(
+            backgroundColor: Colors.blueGrey.shade400,
+          ),
+          colorScheme: const ColorScheme.light().copyWith(
+            background: Colors.white,
+          ),
           inputDecorationTheme: InputDecorationTheme(
             focusedBorder: UnderlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
@@ -54,7 +83,25 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(
+                Icons.menu, // Change this line to use a different icon
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
+          },
+        ),
+        title: const Text(
+          '',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
         centerTitle: true,
       ),
       drawer: const SideMenu(), // Add a drawer to the Scaffold
@@ -179,23 +226,67 @@ class _AddUsersState extends State<AddUsers> {
   String? selectedValue;
 
   // Text controllers for text fields
-  TextEditingController textController1 = TextEditingController();
-  TextEditingController textController2 = TextEditingController();
-  TextEditingController textController3 = TextEditingController();
-  TextEditingController textController4 = TextEditingController();
+  TextEditingController txtUser = TextEditingController();
+  TextEditingController txtPass = TextEditingController();
+  TextEditingController txtFirst = TextEditingController();
+  TextEditingController txtLast = TextEditingController();
 
-  @override
+  void _postData() {
+    isLoading = true;
+
+    // Get the data from the controller and post it
+    Map<String, dynamic> insertPostData = {
+      'role_id': selectedValue,
+      'company_id': '1',
+      'username': txtUser.text,
+      'password': txtPass.text,
+      'first_name': txtFirst.text,
+      'last_name': txtLast.text
+    };
+    print(insertPostData);
+    insertData('https://logitrackserver-901e112e4d25.herokuapp.com/add-users',
+            insertPostData)
+        .then((data) {
+      showAlert(context, 'This is a custom alert message.');
+    }).catchError((error) {
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Users'),
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: Icon(
+                Icons.arrow_back, // or any other back icon you prefer
+                color: Colors.white, // Set the color to white
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            );
+          },
+        ),
+        title: const Text(
+          'Add Users',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
       ),
       body: Container(
           padding: EdgeInsets.all(20),
           child: isLoading
               ? Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey),
+                  ),
                 )
               : SingleChildScrollView(
                   child: Column(
@@ -268,6 +359,7 @@ class _AddUsersState extends State<AddUsers> {
                       ),
                       Container(
                         child: TextFormField(
+                          controller: txtUser,
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(16),
                             hintText: 'Username',
@@ -295,6 +387,7 @@ class _AddUsersState extends State<AddUsers> {
                       ),
                       Container(
                         child: TextFormField(
+                          controller: txtPass,
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(16),
                             hintText: 'Password',
@@ -322,6 +415,7 @@ class _AddUsersState extends State<AddUsers> {
                       ),
                       Container(
                         child: TextFormField(
+                          controller: txtFirst,
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(16),
                             hintText: 'First Name',
@@ -349,6 +443,7 @@ class _AddUsersState extends State<AddUsers> {
                       ),
                       Container(
                         child: TextFormField(
+                          controller: txtLast,
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(16),
                             hintText: 'Last Name',
@@ -368,7 +463,7 @@ class _AddUsersState extends State<AddUsers> {
                             primary: Colors.blueGrey.shade500,
                             minimumSize: const Size.fromHeight(50), // NEW
                           ),
-                          onPressed: () {},
+                          onPressed: _postData,
                           child: const Text(
                             'Submit',
                             style: TextStyle(fontSize: 16, color: Colors.white),
@@ -381,4 +476,26 @@ class _AddUsersState extends State<AddUsers> {
                 )),
     );
   }
+}
+
+// Function to show the alert with custom text
+void showAlert(BuildContext context, String alertText) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Alert'),
+        content: Text(alertText),
+        actions: [
+          TextButton(
+            onPressed: () {
+              // Close the alert dialog
+              Navigator.of(context).pop();
+            },
+            child: Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
 }
