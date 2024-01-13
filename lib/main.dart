@@ -62,6 +62,11 @@ class MyApp extends StatelessWidget {
           colorScheme: const ColorScheme.light().copyWith(
             background: Colors.white,
           ),
+          primarySwatch: Colors.grey,
+          textSelectionTheme: TextSelectionThemeData(
+              cursorColor: Colors.grey,
+              selectionColor: Colors.blueGrey.shade100,
+              selectionHandleColor: Colors.grey),
           inputDecorationTheme: InputDecorationTheme(
             focusedBorder: UnderlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
@@ -360,11 +365,16 @@ class _AddUsersState extends State<AddUsers> {
                       Container(
                         child: TextFormField(
                           controller: txtUser,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(16),
                             hintText: 'Username',
                             hintStyle: TextStyle(
-                                fontSize: 16, color: Colors.grey.shade500),
+                                fontSize: 16,
+                                color: Colors.grey.shade500,
+                                fontWeight: FontWeight.bold),
                             filled: true,
                             fillColor: Colors.grey.shade200,
                           ),
@@ -388,6 +398,9 @@ class _AddUsersState extends State<AddUsers> {
                       Container(
                         child: TextFormField(
                           controller: txtPass,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(16),
                             hintText: 'Password',
@@ -416,6 +429,9 @@ class _AddUsersState extends State<AddUsers> {
                       Container(
                         child: TextFormField(
                           controller: txtFirst,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(16),
                             hintText: 'First Name',
@@ -444,6 +460,9 @@ class _AddUsersState extends State<AddUsers> {
                       Container(
                         child: TextFormField(
                           controller: txtLast,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(16),
                             hintText: 'Last Name',
