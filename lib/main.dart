@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -73,16 +74,36 @@ class SideMenu extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: Text(
-              'Side Menu',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-              ),
+          Container(
+            color: Colors.blueGrey.shade300,
+            width: double.infinity,
+            height: 200,
+            padding: EdgeInsets.only(top: 20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(bottom: 10),
+                  height: 70,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/profile.jpg'),
+                    ),
+                  ),
+                ),
+                const Text(
+                  "Angel",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+                Text(
+                  "Administrator",
+                  style: TextStyle(
+                    color: Colors.grey[200],
+                    fontSize: 14,
+                  ),
+                ),
+              ],
             ),
           ),
           ListTile(
