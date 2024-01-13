@@ -236,9 +236,9 @@ class _AddUsersState extends State<AddUsers> {
   TextEditingController txtFirst = TextEditingController();
   TextEditingController txtLast = TextEditingController();
 
-  void _postData() {
-    isLoading = true;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  void _postData() {
     // Get the data from the controller and post it
     Map<String, dynamic> insertPostData = {
       'role_id': selectedValue,
@@ -248,15 +248,14 @@ class _AddUsersState extends State<AddUsers> {
       'first_name': txtFirst.text,
       'last_name': txtLast.text
     };
-    print(insertPostData);
+
     insertData('https://logitrackserver-901e112e4d25.herokuapp.com/add-users',
             insertPostData)
         .then((data) {
-      showAlert(context, 'This is a custom alert message.');
+      _formKey.currentState!.reset();
+      showAlert(context, 'Added users succesfully!');
     }).catchError((error) {
-      setState(() {
-        isLoading = false;
-      });
+      _formKey.currentState!.reset();
     });
   }
 
@@ -267,7 +266,7 @@ class _AddUsersState extends State<AddUsers> {
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back, // or any other back icon you prefer
                 color: Colors.white, // Set the color to white
               ),
@@ -285,10 +284,12 @@ class _AddUsersState extends State<AddUsers> {
         ),
         centerTitle: true,
       ),
-      body: Container(
+      body: Form(
+        key: _formKey,
+        child: Container(
           padding: EdgeInsets.all(20),
           child: isLoading
-              ? Center(
+              ? const Center(
                   child: CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey),
                   ),
@@ -342,7 +343,7 @@ class _AddUsersState extends State<AddUsers> {
                               ),
                             ),
                           ),
-                          menuItemStyleData: MenuItemStyleData(
+                          menuItemStyleData: const MenuItemStyleData(
                             height: 40,
                           ),
                         ),
@@ -365,7 +366,13 @@ class _AddUsersState extends State<AddUsers> {
                       Container(
                         child: TextFormField(
                           controller: txtUser,
-                          style: TextStyle(
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your Username';
+                            }
+                            return null;
+                          },
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                           decoration: InputDecoration(
@@ -398,7 +405,13 @@ class _AddUsersState extends State<AddUsers> {
                       Container(
                         child: TextFormField(
                           controller: txtPass,
-                          style: TextStyle(
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your Password';
+                            }
+                            return null;
+                          },
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                           decoration: InputDecoration(
@@ -429,7 +442,13 @@ class _AddUsersState extends State<AddUsers> {
                       Container(
                         child: TextFormField(
                           controller: txtFirst,
-                          style: TextStyle(
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your First Name';
+                            }
+                            return null;
+                          },
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                           decoration: InputDecoration(
@@ -460,7 +479,13 @@ class _AddUsersState extends State<AddUsers> {
                       Container(
                         child: TextFormField(
                           controller: txtLast,
-                          style: TextStyle(
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your Last Name';
+                            }
+                            return null;
+                          },
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                           decoration: InputDecoration(
@@ -482,7 +507,12 @@ class _AddUsersState extends State<AddUsers> {
                             primary: Colors.blueGrey.shade500,
                             minimumSize: const Size.fromHeight(50), // NEW
                           ),
-                          onPressed: _postData,
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              // Perform form submission
+                              _postData();
+                            }
+                          },
                           child: const Text(
                             'Submit',
                             style: TextStyle(fontSize: 16, color: Colors.white),
@@ -492,7 +522,9 @@ class _AddUsersState extends State<AddUsers> {
                       // Add other widgets as needed
                     ],
                   ),
-                )),
+                ),
+        ),
+      ),
     );
   }
 }
@@ -503,15 +535,27 @@ void showAlert(BuildContext context, String alertText) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Alert'),
-        content: Text(alertText),
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        title: Text('LogiTrack'),
+        content: Text(
+          alertText,
+          style: TextStyle(
+            fontSize: 16,
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () {
-              // Close the alert dialog
               Navigator.of(context).pop();
             },
-            child: Text('OK'),
+            child: const Text(
+              'OK',
+              style: TextStyle(
+                color: Colors.blueGrey,
+                fontSize: 16,
+              ),
+            ),
           ),
         ],
       );
