@@ -338,7 +338,22 @@ class _AddUsersState extends State<AddUsers> {
                           ),
                         ),
                       ),
-
+                      const SizedBox(
+                        height: 30.0,
+                      ),
+                      Container(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.blueGrey.shade400,
+                            minimumSize: const Size.fromHeight(50), // NEW
+                          ),
+                          onPressed: () {},
+                          child: const Text(
+                            'Submit',
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                        ),
+                      ),
                       // Add other widgets as needed
                     ],
                   ),
