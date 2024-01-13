@@ -249,13 +249,23 @@ class _AddUsersState extends State<AddUsers> {
       'last_name': txtLast.text
     };
 
+    setState(() {
+      selectedValue = null;
+    });
+    _formKey.currentState!.reset();
+
     insertData('https://logitrackserver-901e112e4d25.herokuapp.com/add-users',
             insertPostData)
         .then((data) {
-      _formKey.currentState!.reset();
+      setState(() {
+        isLoading = false;
+      });
+
       showAlert(context, 'Added users succesfully!');
     }).catchError((error) {
-      _formKey.currentState!.reset();
+      setState(() {
+        isLoading = false;
+      });
     });
   }
 
@@ -509,6 +519,10 @@ class _AddUsersState extends State<AddUsers> {
                           ),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
+                              setState(() {
+                                isLoading = true;
+                              });
+
                               // Perform form submission
                               _postData();
                             }
