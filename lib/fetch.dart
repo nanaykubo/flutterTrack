@@ -17,6 +17,26 @@ Future<List<Map<String, dynamic>>?> fetchData(String apiUrl) async {
   }
 }
 
+Future<List<Map<String, dynamic>>?> fetchDataReq(String apiUrl, Map<String, dynamic> requestBody) async {
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(requestBody),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body) as List;
+      return responseData.cast<Map<String, dynamic>>();
+    } else {
+      return null;
+    }
+  } catch (e) {
+    print('Error during API request: $e');
+    return null;
+  }
+}
+
 Future<List<Map<String, dynamic>>?> insertData(
     String apiUrl, Map<String, dynamic> postData) async {
   try {

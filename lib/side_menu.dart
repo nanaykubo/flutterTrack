@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:logitrack/home.dart';
 import 'package:logitrack/add_users.dart';
+import 'package:logitrack/add_vehicles.dart';
+import 'package:logitrack/add_monitoring.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({Key? key}) : super(key: key);
@@ -69,16 +71,20 @@ class SideMenu extends StatelessWidget {
             title: const Text('Add Vehicles'),
             leading: Icon(Icons.directions_car),
             onTap: () {
-              // Handle the tap on Add Vehicles
-              Navigator.pop(context); // Close the drawer
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddVehicles()),
+              );
             },
           ),
           ListTile(
             title: const Text('Add Monitoring'),
             leading: Icon(Icons.monitor),
             onTap: () {
-              // Handle the tap on Add Monitoring
-              Navigator.pop(context); // Close the drawer
+               Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddMonitoring()),
+              );
             },
           ),
           // Add more ListTile widgets for additional links
