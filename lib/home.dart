@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 import 'package:logitrack/side_menu.dart';
@@ -112,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                     all_day = item['start_time'] + "-" + item['end_time'];
                   }
 
-                  List<String> stats = ['PENDING', 'ON GOING', 'DONE'];
+                  List<String> stats = ['PENDING', 'ON-GOING', 'DONE'];
 
                   return Column(
                     children: [
@@ -121,41 +124,53 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.white,
                         elevation: 0,
                         child: ListTile(
-                          title: Text(
-                            'Monitor No# ${item['id']}',
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
                           subtitle: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Text(
+                                    'Monitor No# ${item['id']}',
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                   Text(all_day),
                                   Text('Assigned Driver: ${item['first_name']}'),
                                 ],
                               ),
                               // Status text widget
-                              Text(
-                                ' ${stats[item['status']]}', // Replace with the correct key for status
-                                  style: const TextStyle(
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.bold,
+                              Container(
+                                child: Container(
+                                  padding: EdgeInsets.fromLTRB(6.0, 4.0, 6.0, 4.0),
+                                  decoration: BoxDecoration(
+                                    color: getStatusBackgroundColor(stats[item['status']]),
+                                    borderRadius: BorderRadius.circular(16.0),
                                   ),
-                              ),
+                                  child: Text(
+                                    ' ${stats[item['status']]}',
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      fontSize: 14.0,     
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white
+                                    ),
+                                  ),
+                                ),
+                              )
                             ],
+                          
                           ),
                           // You can customize the ListTile further based on your needs
                         ),
                       ),
                       if (monitoringData.last != item)
                       Divider(
-                        color: Colors.grey.shade600, // Adjust color as needed
-                        height: 0.3,       // Adjust height as needed
+                        color: Colors.grey.shade300, // Adjust color as needed
+                        height: 0.1,       // Adjust height as needed
                       ),
                     ],
                   );
@@ -165,5 +180,21 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+}
+
+Color getStatusBackgroundColor(String status) {
+
+  print("it prints: ${status}");
+
+  switch (status) {
+    case 'PENDING':
+      return Colors.yellow; // Adjust the color for 'on going' status
+    case 'ON-GOING':
+      return Colors.blue; // Adjust the color for 'pending' status
+    case 'DONE':
+      return Colors.green; // Adjust the color for 'done' status
+    default:
+      return Colors.transparent; // Default background color
   }
 }
